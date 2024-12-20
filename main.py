@@ -3,6 +3,8 @@ from PIL import Image, ImageTk
 from tkinter import ttk
 import tkinter as tk
 import json
+import getpass
+import time
 
 ctk.deactivate_automatic_dpi_awareness()
 ctk.set_appearance_mode("dark")  # Modes: system (default), light, dark
@@ -24,7 +26,8 @@ class GUI(ctk.CTk):
         self.game_frame = ctk.CTkFrame(self, corner_radius=10, bg_color="#2c2f33")
 
         self.start_page_frame = ctk.CTkFrame(self, corner_radius=10, bg_color="#2c2f33")
-        self.difficulty = ctk.CTkTabview(self.start_page_frame, corner_radius=10, bg_color="#2c2f33", height=400, width=400, command=self.change_tree)
+        self.difficulty = ctk.CTkTabview(self.start_page_frame, corner_radius=10, bg_color="#2c2f33", fg_color="#2c2f33", height=400, width=400, command=self.change_tree)#
+        self.start_button = ctk.CTkButton(self.start_page_frame, text="Start", corner_radius=10, command=self.place_buttons)    
         
 
     
@@ -60,11 +63,13 @@ class GUI(ctk.CTk):
         self.tree.grid()
 
     def start_page(self):
+        self.tree_config()
+        self.start_button.grid(row=1, column=0, sticky="nsew", padx=5, pady=5)
         self.start_page_frame.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
         self.difficulty.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
         self.game_frame.grid_forget()
        
-        self.tree_config()
+        
 
     def tree_config(self):
         difficulty = self.difficulty.get().lower()
@@ -100,20 +105,31 @@ class GUI(ctk.CTk):
         with open(f"I_am_invisible/{difficulty}.json", "r") as json_file:   
             data = json.load(json_file)
         print(data)
+        iid = 0
         for i in data:
-            self.tree.insert(parent='', index='end', iid=0, text='', values=(i, data[i]))
+            iid += 1
+            print(i, data[i])
+            self.tree.insert(parent='', index='end', iid=iid, text='', values=(i, data[i]))
         self.tree.grid(sticky="nsew", padx=5, pady=5) 
 
         
     def place_buttons(self):
-        self.nol = 5                                                #number of letters
+        self.tim = time.time()
+        difficulty = self.difficulty.get().lower()
+        if difficulty == "easy":
+            self.nol = 3
+        elif difficulty == "normal":
+            self.nol = 4
+        elif difficulty == "hard":
+            self.nol = 5
+        self.start_page_frame.grid_forget()
+        self.game_frame.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
         row = 0
         grd_row = (0, 1, 2, 3, 4, 5)
         grd_col = ()
         for i in range(self.nol):
             grd_col += (i,)
         self.random_word()
-
         for i in range(5):                                  
             for i in range(self.nol):
                 col = i%self.nol
@@ -127,23 +143,35 @@ class GUI(ctk.CTk):
         self.entry.bind("<Return>", self.check_word)
     
     def check_word(self, event):
+        '''
+        check if the word is correct
+        '''
         word = self.entry.get()
         if len(word) != self.nol or self.win:
             return
         wrong = 0
         for i in range(self.nol):
-            if word[i] != self.word[i]:
-                color = "#777b7e"
-                wrong += 1
-            if word[i]  in self.word:
+            if word[i] == self.word[i]:          # If the letter is correct
+                color = "#6aa963"
+            elif word[i] in self.word:           # If the letter is in the word but in the wrong place 
                 color = "#c8b356" 
                 wrong += 1 
-            if word[i] == self.word[i]:
-                color = "#6aa963"
+            elif word[i] != self.word[i]:        # If the letter is wrong   
+                color = "#777b7e"
+                wrong += 1
+            
+            
             
             self.labels[self.num].configure(fg_color=color, text=word[i], font=("Arial", 50), text_color="black")
             self.num+=1
         if wrong == 0:
+            self.time = time.time() - self.tim
+            print(self.time)
+            with open(f"I_am_invisible/{self.difficulty.get().lower()}.json", "r") as json_file:   
+                data = json.load(json_file)
+            with open(f"I_am_invisible/{self.difficulty.get().lower()}.json", "w") as json_file: 
+                data[getpass.getuser()] = self.time  
+                json.dump(data, json_file)
             self.win = True
               
         self.entry.delete(0, "end")
