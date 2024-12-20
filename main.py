@@ -1,27 +1,12 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk
-import pyautogui
 
 ctk.deactivate_automatic_dpi_awareness()
 ctk.set_appearance_mode("dark")  # Modes: system (default), light, dark
 ctk.set_default_color_theme("blue")  # Themes: blue (default), dark-blue, green
 
 
-class Start_picture(ctk.CTk):
-    def __init__(self):
-        super().__init__(fg_color="white")        
-        self.rowconfigure((0, 1, 2), weight=1)
-        self.columnconfigure((0, 1, 2), weight=1)
-        self.attributes("-fullscreen", True)
-        self.attributes("-transparent", "white")
 
-        self.after(2000, self.destroy)
-        self.widget()
-    
-    def widget(self):
-        self.image = ctk.CTkImage(Image.open('images/Wordel.png'), size=(500, 500))
-        self.image_label = ctk.CTkLabel(self, image=self.image, text=" ", width=500, height=500)
-        self.image_label.grid(row=1, column=1)
 
 
 
@@ -38,17 +23,6 @@ class GUI(ctk.CTk):
         self.place_buttons()
         self.num = 0
         self.win = False
-        
-    def start_picture(self):
-        self.height = self.winfo_height()
-        self.width = self.winfo_width()
-        self.image = ctk.CTkImage(Image.open('images/Wordel.png'), size=(self.width, self.height))
-        self.image_label = ctk.CTkLabel(self, image=self.image, text=" ", width=self.height, height=self.width)
-        self.image_label.grid(row=0, column=0, columnspan=5, rowspan=6)
-        self.after(2000, self.image_label.destroy)
-        screen_width, screen_height = pyautogui.size()
-        print(screen_width, screen_height)
-        #self.geometry(f"{self.width}x{self.height}+{int(screen_width/2 - self.width/2)}+{int(screen_height/2 - self.height/2)}")
         
     def place_buttons(self):
         self.nol = 5                                                #number of letters
@@ -72,7 +46,6 @@ class GUI(ctk.CTk):
         self.entry = ctk.CTkEntry(self, corner_radius=10, placeholder_text="Enter a word")
         self.entry.grid(row=row, column=0, columnspan=5, sticky="nsew", padx=5, pady=5)
         self.entry.bind("<Return>", self.check_word)
-        self.after(70, self.start_picture)
     
     def check_word(self, event):
         word = self.entry.get()
@@ -99,11 +72,25 @@ class GUI(ctk.CTk):
     
     def random_word(self):
         self.word = "hello"
-        
+
+
+
+class Start_picture(ctk.CTkToplevel):
+    def __init__(self):
+        super().__init__(fg_color="white")        
+        self.rowconfigure((0, 1, 2), weight=1)
+        self.columnconfigure((0, 1, 2), weight=1)
+        self.attributes("-fullscreen", True)
+        self.attributes("-transparent", "white")
+        self.after(2000, self.destroy)
+        self.after(200, self.widget)
+    
+    def widget(self):
+        self.image_label = ctk.CTkLabel(self, image=ctk.CTkImage(Image.open('images/Wordel.png'), size=(500, 500)), text=" ", width=500, height=500)
+        self.image_label.grid(row=1, column=1)
             
      
 if __name__ == "__main__":
-    start_picture = Start_picture()
-    start_picture.update()
     app = GUI()
-    app.mainloop()
+    start_picture = Start_picture()
+    start_picture.mainloop()
