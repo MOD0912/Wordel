@@ -49,7 +49,7 @@ class GUI(ctk.CTk):
         self.start_page_frame.columnconfigure((0, 1, 2, 3, 4), weight=1)
 
         self.start_page()        
-        self.after(000, self.deiconify)
+        self.after(2000, self.deiconify)
         self.labels = []
         self.num = 0
         self.time = None
