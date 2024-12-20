@@ -25,8 +25,9 @@ class GUI(ctk.CTk):
 
         self.game_frame = ctk.CTkFrame(self, corner_radius=10, bg_color="#2c2f33")
 
-        self.start_page_frame = ctk.CTkFrame(self, corner_radius=10, bg_color="#2c2f33")
+        self.start_page_frame = ctk.CTkFrame(self, corner_radius=10, bg_color="#2c2f33", fg_color="#2c2f33")
         self.difficulty = ctk.CTkTabview(self.start_page_frame, corner_radius=10, bg_color="#2c2f33", fg_color="#2c2f33", height=400, width=400, command=self.change_tree)#
+        self.label = ctk.CTkLabel(self.start_page_frame, text="Choose a difficulty", corner_radius=10, font=('Brush Script MT', 30))
         self.start_button = ctk.CTkButton(self.start_page_frame, text="Start", corner_radius=10, command=self.place_buttons)    
         
 
@@ -51,7 +52,6 @@ class GUI(ctk.CTk):
         self.after(000, self.deiconify)
         self.labels = []
         self.num = 0
-        self.win = False
         self.time = None
 
     def change_tree(self):
@@ -60,13 +60,14 @@ class GUI(ctk.CTk):
         print(master, self.difficulty.index(self.difficulty.get()))
         self.tree = ttk.Treeview(master=master)
         self.tree_config()
-        self.tree.grid()
+        self.tree.grid(row=2)
 
     def start_page(self):
         self.tree_config()
-        self.start_button.grid(row=1, column=0, sticky="nsew", padx=5, pady=5)
+        self.label.grid(row=0, column=0, padx=5, pady=5)
+        self.start_button.grid(row=2, column=0, sticky="nsew", padx=5, pady=5)
         self.start_page_frame.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
-        self.difficulty.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
+        self.difficulty.grid(row=1, column=0, sticky="nsew", padx=5, pady=5)
         self.game_frame.grid_forget()
        
         
@@ -147,7 +148,7 @@ class GUI(ctk.CTk):
         check if the word is correct
         '''
         word = self.entry.get()
-        if len(word) != self.nol or self.win:
+        if len(word) != self.nol:
             return
         wrong = 0
         for i in range(self.nol):
@@ -169,12 +170,21 @@ class GUI(ctk.CTk):
             print(self.time)
             with open(f"I_am_invisible/{self.difficulty.get().lower()}.json", "r") as json_file:   
                 data = json.load(json_file)
+                print(data)
             with open(f"I_am_invisible/{self.difficulty.get().lower()}.json", "w") as json_file: 
-                data[getpass.getuser()] = self.time  
+                data[getpass.getuser()] = self.time  if data[getpass.getuser()] > self.time else data[getpass.getuser()]
                 json.dump(data, json_file)
-            self.win = True
+            self.tree.delete(*self.tree.get_children())
+            for i in self.labels:
+                i.destroy()
+            self.entry.destroy()
+            self.labels = []
+            self.num = 0
+            self.start_page()
+        else:
+            self.entry.delete(0, "end")
+
               
-        self.entry.delete(0, "end")
 
     
     def random_word(self):
