@@ -42,7 +42,7 @@ class GUI(ctk.CTk):
         self.dic = { 
             0: self.easy,
             1: self.normal, 
-            2:self.hard
+            2: self.hard
         }
 
         self.start_page_frame.rowconfigure((0, 1, 2, 3, 4), weight=1)
