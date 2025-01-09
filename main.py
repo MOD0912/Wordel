@@ -207,6 +207,7 @@ class Start_picture(ctk.CTkToplevel):
         self.image_label.grid(row=1, column=1)
             
      
+     
 if __name__ == "__main__":
     app = GUI()
     start_picture = Start_picture()
