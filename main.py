@@ -11,11 +11,6 @@ ctk.set_appearance_mode("dark")  # Modes: system (default), light, dark
 ctk.set_default_color_theme("blue")  # Themes: blue (default), dark-blue, green
 
 
-
-
-
-
-
 class GUI(ctk.CTk): 
     def __init__(self):
         super().__init__()
@@ -207,7 +202,7 @@ class Start_picture(ctk.CTkToplevel):
         self.image_label.grid(row=1, column=1)
             
      
-     
+
 if __name__ == "__main__":
     app = GUI()
     start_picture = Start_picture()
