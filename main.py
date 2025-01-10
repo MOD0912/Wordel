@@ -158,9 +158,7 @@ class GUI(ctk.CTk):
                 color = "#777b7e"
                 wrong += 1
             
-            
-            
-            self.labels[self.num].configure(fg_color=color, text=word[i], font=("Arial", 50), text_color="black")
+            self.labels[self.num].configure(fg_color=color, text=word[i].upper(), font=("Arial", 50), text_color="black")
             self.num+=1
         if wrong == 0:
             self.time = time.time() - self.tim
@@ -172,19 +170,14 @@ class GUI(ctk.CTk):
                 data[getpass.getuser()] = self.time  if data[getpass.getuser()] > self.time else data[getpass.getuser()]
                 json.dump(data, json_file)
             self.tree.delete(*self.tree.get_children())
-            for i in self.labels:
-                i.destroy()
-            self.entry.destroy()
-            self.labels = []
-            self.num = 0
-
             self.win_screen()
         else:
+            self.num = 0
             self.entry.delete(0, "end")
+            
 
 
     def win_screen(self):
-        self.time = 111
         my_image = Image.open("images/imagess.jpg")
         height = 200
         size = 40
@@ -203,11 +196,23 @@ class GUI(ctk.CTk):
 
         my_image.save("images/image-text.jpg")
         start_picture = Start_picture("images/image-text.jpg", 5000)
-        self.start_page()
-        self.withdraw()
-        self.after(5000, self.deiconify)
+        
+        #self.withdraw()
+        self.after(5000, self.kill)
+        
         start_picture.mainloop()
         print("You won")
+
+    
+    def kill(self):
+        print("kill")
+        for i in self.labels:
+            i.destroy()
+            self.entry.destroy()
+            self.labels = []
+            self.num = 0
+        
+        self.start_page()
         
 
               
