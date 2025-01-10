@@ -5,6 +5,8 @@ import tkinter as tk
 import json
 import getpass
 import time
+from PIL import Image, ImageFont, ImageDraw
+
 
 ctk.deactivate_automatic_dpi_awareness()
 ctk.set_appearance_mode("dark")  # Modes: system (default), light, dark
@@ -175,9 +177,38 @@ class GUI(ctk.CTk):
             self.entry.destroy()
             self.labels = []
             self.num = 0
-            self.start_page()
+
+            self.win_screen()
         else:
             self.entry.delete(0, "end")
+
+
+    def win_screen(self):
+        self.time = 111
+        my_image = Image.open("images/imagess.jpg")
+        height = 200
+        size = 40
+        if self.time >= 10:
+            size = 35
+            height = 202
+        if self.time >= 100 :
+            height = 205
+            size = 30
+        
+        title_font = ImageFont.truetype('arial', size)
+
+        image_editable = ImageDraw.Draw(my_image)
+        self.time = '{:.2f}'.format(float(self.time))
+        image_editable.text((10, height), f"Time: {self.time}s", (0, 0, 0), font=title_font)
+
+        my_image.save("images/image-text.jpg")
+        start_picture = Start_picture("images/image-text.jpg", 5000)
+        self.start_page()
+        self.withdraw()
+        self.after(5000, self.deiconify)
+        start_picture.mainloop()
+        print("You won")
+        
 
               
 
@@ -188,17 +219,18 @@ class GUI(ctk.CTk):
 
 
 class Start_picture(ctk.CTkToplevel):
-    def __init__(self):
-        super().__init__(fg_color="white")        
+    def __init__(self, image="images/Wordel.png", kys=2000):
+        super().__init__(fg_color="white")  
+        self.image = image      
         self.rowconfigure((0, 1, 2), weight=1)
         self.columnconfigure((0, 1, 2), weight=1)
         self.attributes("-fullscreen", True)
         self.attributes("-transparent", "white")
-        self.after(2000, self.destroy)
+        self.after(kys, self.destroy)
         self.after(200, self.widget)
     
     def widget(self):
-        self.image_label = ctk.CTkLabel(self, image=ctk.CTkImage(Image.open('images/Wordel.png'), size=(500, 500)), text=" ", width=500, height=500)
+        self.image_label = ctk.CTkLabel(self, image=ctk.CTkImage(Image.open(f'{self.image}'), size=(500, 500)), text=" ", width=500, height=500)
         self.image_label.grid(row=1, column=1)
             
      
