@@ -172,7 +172,6 @@ class GUI(ctk.CTk):
             self.tree.delete(*self.tree.get_children())
             self.win_screen()
         else:
-            self.num = 0
             self.entry.delete(0, "end")
             
 
