@@ -157,7 +157,7 @@ class GUI(ctk.CTk):
         '''
         check if the word is correct
         '''
-        word = self.entry.get()
+        word = self.entry.get().lower()
         if len(word) != self.nol:
             return
         wrong = 0
@@ -175,12 +175,16 @@ class GUI(ctk.CTk):
             self.num+=1
         if wrong == 0:
             self.time = time.time() - self.tim
+            self.time = '{:.2f}'.format(float(self.time))
             print(self.time)
             with open(f"I_am_invisible/{self.difficulty.get().lower()}.json", "r") as json_file:   
                 data = json.load(json_file)
                 print(data)
             with open(f"I_am_invisible/{self.difficulty.get().lower()}.json", "w") as json_file: 
-                data[getpass.getuser()] = self.time  if data[getpass.getuser()] > self.time else data[getpass.getuser()]
+                if getpass.getuser() not in data:
+                    data[getpass.getuser()] = self.time
+                else:
+                    data[getpass.getuser()] = self.time  if data[getpass.getuser()] > self.time else data[getpass.getuser()]
                 json.dump(data, json_file)
             self.tree.delete(*self.tree.get_children())
             self.win_screen()
@@ -204,17 +208,16 @@ class GUI(ctk.CTk):
         my_image = Image.open("images/imagess.jpg")
         height = 200
         size = 40
-        if self.time >= 10:
+        if float(self.time) >= 10:
             size = 35
             height = 202
-        if self.time >= 100 :
+        if float(self.time) >= 100 :
             height = 205
             size = 30
         
         title_font = ImageFont.truetype('arial', size)
 
         image_editable = ImageDraw.Draw(my_image)
-        self.time = '{:.2f}'.format(float(self.time))
         image_editable.text((10, height), f"Time: {self.time}s", (0, 0, 0), font=title_font)
 
         my_image.save("images/image-text.jpg")
@@ -249,7 +252,7 @@ class GUI(ctk.CTk):
             self.word = random.choice(self.letters4)
         elif dif == "hard":
             self.word = random.choice(self.letters5)
-        #print(self.word)
+        print(self.word)
 
 
 class Start_picture(ctk.CTkToplevel):
