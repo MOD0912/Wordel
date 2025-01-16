@@ -201,8 +201,8 @@ class GUI(ctk.CTk):
         my_image.save("images/image-text.jpg")
         start_picture = Start_picture("images/image-text.jpg", 5000)
         self.after(5000, self.kill)
-        start_picture.mainloop()
         self.reveal_word()
+        start_picture.mainloop()
         print("You lost")
 
     def win_screen(self):
@@ -243,6 +243,7 @@ class GUI(ctk.CTk):
         
 
     def reveal_word(self):
+        print("The word was:", self.word)
         reveal_window = ctk.CTkToplevel(self)
         reveal_window.title("The word is...")
         reveal_window.geometry("200x100")
@@ -252,6 +253,7 @@ class GUI(ctk.CTk):
         reveal_label.pack()
         reveal_button = ctk.CTkButton(reveal_window, text="OK", command=reveal_window.destroy)
         reveal_button.pack(pady=10)
+        reveal_window.focus_force()
         reveal_window.mainloop()
 
     
@@ -264,6 +266,7 @@ class GUI(ctk.CTk):
         elif dif == "hard":
             self.word = random.choice(self.letters5)
         print(self.word)
+
 
 
 class Start_picture(ctk.CTkToplevel):
