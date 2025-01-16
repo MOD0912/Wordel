@@ -184,7 +184,7 @@ class GUI(ctk.CTk):
                 if getpass.getuser() not in data:
                     data[getpass.getuser()] = self.time
                 else:
-                    data[getpass.getuser()] = self.time  if data[getpass.getuser()] > self.time else data[getpass.getuser()]
+                    data[getpass.getuser()] = self.time  if data[getpass.getuser()] > str(self.time) else data[getpass.getuser()]
                 json.dump(data, json_file)
             self.tree.delete(*self.tree.get_children())
             self.win_screen()
@@ -202,6 +202,7 @@ class GUI(ctk.CTk):
         start_picture = Start_picture("images/image-text.jpg", 5000)
         self.after(5000, self.kill)
         start_picture.mainloop()
+        self.reveal_word()
         print("You lost")
 
     def win_screen(self):
@@ -241,7 +242,17 @@ class GUI(ctk.CTk):
         self.start_page()
         
 
-              
+    def reveal_word(self):
+        reveal_window = ctk.CTkToplevel(self)
+        reveal_window.title("The word is...")
+        reveal_window.geometry("200x100")
+        reveal_text = ctk.CTkLabel(reveal_window, text="The word was:", font=("Arial", 20))
+        reveal_label = ctk.CTkLabel(reveal_window, text=self.word, font=("Arial", 20))
+        reveal_text.pack()
+        reveal_label.pack()
+        reveal_button = ctk.CTkButton(reveal_window, text="OK", command=reveal_window.destroy)
+        reveal_button.pack(pady=10)
+        reveal_window.mainloop()
 
     
     def random_word(self):
