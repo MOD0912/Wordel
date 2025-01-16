@@ -242,7 +242,6 @@ class GUI(ctk.CTk):
 
     
     def random_word(self):
-        self.word = "hello"
         dif = self.difficulty.get().lower()
         if dif == "easy":
             self.word = random.choice(self.letters3)
