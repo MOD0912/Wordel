@@ -237,7 +237,7 @@ class GUI(ctk.CTk):
             self.entry.destroy()
             self.labels = []
             self.num = 0
-        
+        self.tree.delete(*self.tree.get_children())
         self.start_page()
         
 
