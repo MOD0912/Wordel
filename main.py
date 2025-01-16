@@ -6,7 +6,8 @@ import json
 import getpass
 import time
 from PIL import Image, ImageFont, ImageDraw
-
+from english_words import get_english_words_set
+import random
 
 ctk.deactivate_automatic_dpi_awareness()
 ctk.set_appearance_mode("dark")  # Modes: system (default), light, dark
@@ -19,6 +20,18 @@ class GUI(ctk.CTk):
         self.title("Wordel")
         self.resizable(0, 0)
         self.iconbitmap('images/Wordel.ico')
+        web2lowerset = get_english_words_set(['web2'], lower=True)
+        self.letters5 = []       
+        self.letters4 = []
+        self.letters3 = []
+        for i in web2lowerset:
+            if len(i) == 5:
+                self.letters5.append(i)
+            elif len(i) == 4:
+                self.letters4.append(i)
+            elif len(i) == 3:
+                self.letters3.append(i)
+                
 
         self.game_frame = ctk.CTkFrame(self, corner_radius=10, bg_color="#2c2f33")
 
@@ -172,10 +185,20 @@ class GUI(ctk.CTk):
             self.tree.delete(*self.tree.get_children())
             self.win_screen()
         else:
-            self.num = 0
+            if self.num == 5*self.nol:
+                self.loose_screen()
             self.entry.delete(0, "end")
             
-
+    def loose_screen(self):
+        my_image = Image.open("images/imagess.jpg")
+        title_font = ImageFont.truetype('arial', 40)
+        image_editable = ImageDraw.Draw(my_image)
+        image_editable.text((30, 200), "You lost", (0, 0, 0), font=title_font)
+        my_image.save("images/image-text.jpg")
+        start_picture = Start_picture("images/image-text.jpg", 5000)
+        self.after(5000, self.kill)
+        start_picture.mainloop()
+        print("You lost")
 
     def win_screen(self):
         my_image = Image.open("images/imagess.jpg")
@@ -220,7 +243,14 @@ class GUI(ctk.CTk):
     
     def random_word(self):
         self.word = "hello"
-
+        dif = self.difficulty.get().lower()
+        if dif == "easy":
+            self.word = random.choice(self.letters3)
+        elif dif == "normal":
+            self.word = random.choice(self.letters4)
+        elif dif == "hard":
+            self.word = random.choice(self.letters5)
+        #print(self.word)
 
 
 class Start_picture(ctk.CTkToplevel):
