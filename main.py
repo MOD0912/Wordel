@@ -14,7 +14,7 @@ ctk.set_appearance_mode("dark")  # Modes: system (default), light, dark
 ctk.set_default_color_theme("blue")  # Themes: blue (default), dark-blue, green
 
 
-class GUI(ctk.CTk): 
+class Main(ctk.CTk): 
     def __init__(self):
         super().__init__()
         self.title("Wordel")
@@ -135,12 +135,7 @@ class GUI(ctk.CTk):
             self.nol = 5
         self.start_page_frame.grid_forget()
         self.game_frame.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
-        row = 0
-        grd_row = (0, 1, 2, 3, 4, 5)
-        grd_col = ()
-        for i in range(self.nol):
-            grd_col += (i,)
-        self.random_word()
+
         for i in range(5):                                  
             for i in range(self.nol):
                 col = i%self.nol
@@ -184,7 +179,7 @@ class GUI(ctk.CTk):
                 if getpass.getuser() not in data:
                     data[getpass.getuser()] = self.time
                 else:
-                    data[getpass.getuser()] = self.time  if data[getpass.getuser()] > str(self.time) else data[getpass.getuser()]
+                    data[getpass.getuser()] = self.time if data[getpass.getuser()] > str(self.time) else data[getpass.getuser()]
                 json.dump(data, json_file)
             self.tree.delete(*self.tree.get_children())
             self.win_screen()
@@ -277,6 +272,7 @@ class Start_picture(ctk.CTkToplevel):
         self.columnconfigure((0, 1, 2), weight=1)
         self.attributes("-fullscreen", True)
         self.attributes("-transparent", "white")
+        self.focus_force()
         self.after(kys, self.destroy)
         self.after(200, self.widget)
     
@@ -287,6 +283,6 @@ class Start_picture(ctk.CTkToplevel):
      
 
 if __name__ == "__main__":
-    app = GUI()
+    app = Main()
     start_picture = Start_picture()
     start_picture.mainloop()
